@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Room, Complaint
+from django.db import models
 
 class RoomSerializer(serializers.ModelSerializer):
     class Meta:
@@ -63,4 +64,19 @@ class ComplaintSerializer(serializers.ModelSerializer):
             data['room_status'] = room.status
         except Room.DoesNotExist:
             raise serializers.ValidationError("Room not found with the provided details")
-        return data 
+        return data
+
+class Room(models.Model):
+    bed_no = models.CharField(max_length=10)
+    room_no = models.CharField(max_length=20)
+    Block = models.CharField(max_length=10)
+    Floor_no = models.IntegerField()
+    # ... other fields ...
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['bed_no', 'room_no', 'Block', 'Floor_no'],
+                name='unique_room_per_bed_block_floor'
+            )
+        ] 
