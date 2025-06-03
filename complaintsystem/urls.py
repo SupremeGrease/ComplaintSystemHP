@@ -22,7 +22,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('', include('complaints.urls')),
     path('admin/', admin.site.urls),
-   # path('api/', include('complaints.urls')),
+    path('api/', include('complaints.urls')),
 ]
 
 # Add media URLs for development

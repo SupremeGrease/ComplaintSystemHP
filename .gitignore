@@ -1,1 +1,3 @@
-venv/ 
+venv/
+complaintsystem\complaintsystem\__pycache__
+complaintsystem\complaints\__pycache__ 

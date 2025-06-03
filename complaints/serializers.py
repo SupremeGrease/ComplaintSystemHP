@@ -66,17 +66,4 @@ class ComplaintSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Room not found with the provided details")
         return data
 
-class Room(models.Model):
-    bed_no = models.CharField(max_length=10)
-    room_no = models.CharField(max_length=20)
-    Block = models.CharField(max_length=10)
-    Floor_no = models.IntegerField()
-    # ... other fields ...
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=['bed_no', 'room_no', 'Block', 'Floor_no'],
-                name='unique_room_per_bed_block_floor'
-            )
-        ] 
+# Removing the duplicate Room model class that was here 
