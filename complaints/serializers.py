@@ -6,35 +6,12 @@ class RoomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Room
         fields = '__all__'
-        read_only_fields = ('qr_code', 'qr_code_id')
+        read_only_fields = ('qr_code', 'dataenc')
 
 class ComplaintCreateSerializer(serializers.ModelSerializer):
-    qr_code_id = serializers.UUIDField(write_only=True)
-
     class Meta:
         model = Complaint
-        fields = [
-            'qr_code_id', 'issue_type', 'description', 'priority', 'image'
-        ]
-
-    def create(self, validated_data):
-        qr_code_id = validated_data.pop('qr_code_id')
-        try:
-            room = Room.objects.get(qr_code_id=qr_code_id)
-        except Room.DoesNotExist:
-            raise serializers.ValidationError("Invalid QR code.")
-        complaint = Complaint.objects.create(
-            bed_number=room.bed_no,
-            block=room.Block,
-            room_number=room.room_no,
-            floor=room.Floor_no,
-            ward=room.ward,
-            speciality=room.speciality,
-            room_type=room.room_type,
-            room_status=room.status,
-            **validated_data
-        )
-        return complaint
+        fields = ['issue_type', 'description', 'priority', 'image']
 
 class ComplaintSerializer(serializers.ModelSerializer):
     class Meta:

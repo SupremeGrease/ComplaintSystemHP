@@ -4,6 +4,8 @@ from io import BytesIO
 from django.core.files import File
 from PIL import Image
 import uuid
+import base64
+import json
 
 # Create your models here.
 class Room(models.Model):
@@ -20,13 +22,32 @@ class Room(models.Model):
     
     # QR Code
     qr_code = models.ImageField(upload_to='qr_codes/', blank=True, null=True)
-    qr_code_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    dataenc = models.CharField(max_length=500, blank=True, null=True)  # Store base64 encoded data
     
     def __str__(self):
         return f"Room {self.room_no} - Bed {self.bed_no} - {self.Block}"
     
+    def get_room_data(self):
+        # Create a dictionary of room data
+        room_data = {
+            'bed_no': self.bed_no,
+            'room_no': self.room_no,
+            'Block': self.Block,
+            'Floor_no': self.Floor_no,
+            'ward': self.ward,
+            'speciality': self.speciality,
+            'room_type': self.room_type,
+            'status': self.status
+        }
+        # Convert to JSON string and then to base64
+        json_data = json.dumps(room_data)
+        return base64.b64encode(json_data.encode()).decode()
+    
     def save(self, *args, **kwargs):
         if not self.qr_code:
+            # Generate base64 encoded data
+            self.dataenc = self.get_room_data()
+            
             # Generate QR code
             qr = qrcode.QRCode(
                 version=1,
@@ -34,8 +55,8 @@ class Room(models.Model):
                 box_size=10,
                 border=4,
             )
-            ### here add qr_data=f""https.fsjbfbb ...."
-            qr_data = str(self.qr_code_id) 
+            # Add the URL with encoded data
+            qr_data = f"http://localhost:5173/ComplaintForm?data={self.dataenc}"
             qr.add_data(qr_data)
             qr.make(fit=True)
             
@@ -45,7 +66,7 @@ class Room(models.Model):
             # Save QR code to model
             buffer = BytesIO()
             qr_image.save(buffer, format='PNG')
-            filename = f'qr_code_{self.qr_code_id}.png'
+            filename = f'qr_code_{self.room_no}_{self.bed_no}.png'
             self.qr_code.save(filename, File(buffer), save=False)
         
         super().save(*args, **kwargs)

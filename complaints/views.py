@@ -32,16 +32,6 @@ class RoomViewSet(GenericViewSet, ListModelMixin, CreateModelMixin, RetrieveMode
         room.save()
         return Response(RoomSerializer(room).data)
 
-    @action(detail=True, methods=['get'])
-    def get_qr_code(self, request, pk=None):
-        room = self.get_object()
-        if not room.qr_code:
-            room.save()  # This will generate the QR code
-        return Response({
-            'qr_code_url': request.build_absolute_uri(room.qr_code.url),
-            'qr_code_id': str(room.qr_code_id)
-        })
-
 class ComplaintViewSet(GenericViewSet, ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin):
     queryset = Complaint.objects.all().order_by('-submitted_at')
     lookup_field = 'ticket_id'

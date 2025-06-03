@@ -7,7 +7,7 @@ class RoomAdmin(admin.ModelAdmin):
     list_filter = ('status', 'Block', 'Floor_no', 'ward', 'speciality', 'room_type')
     search_fields = ('room_no', 'bed_no', 'Block', 'ward')
     ordering = ('Block', 'Floor_no', 'room_no')
-    readonly_fields = ('qr_code', 'qr_code_id')
+    readonly_fields = ('qr_code',)
 
 @admin.register(Complaint)
 class ComplaintAdmin(admin.ModelAdmin):
