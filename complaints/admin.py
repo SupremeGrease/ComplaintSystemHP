@@ -3,7 +3,7 @@ from .models import Room, Complaint
 
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
-    list_display = ('room_no', 'bed_no', 'Block', 'Floor_no', 'ward', 'speciality', 'room_type', 'status',)
+    list_display = ('id', 'room_no', 'bed_no', 'Block', 'Floor_no', 'ward', 'speciality', 'room_type', 'status',)
     list_filter = ('status', 'Block', 'Floor_no', 'ward', 'speciality', 'room_type')
     search_fields = ('room_no', 'bed_no', 'Block', 'ward')
     ordering = ('Block', 'Floor_no', 'room_no')
