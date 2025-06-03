@@ -61,8 +61,8 @@ class Complaint(models.Model):
     PRIORITY_CHOICES = [('low', 'Low'), ('medium', 'Medium'), ('high', 'High')]
     STATUS_CHOICES = [('open', 'Open'), ('in_progress', 'In Progress'), ('resolved', 'Resolved'),('closed','Closed'),('on hold','On Hold')]
 
-    # Auto-generated fields
-    ticket_id = models.CharField(max_length=12, unique=True, editable=False)
+    # Make ticket_id the primary key
+    ticket_id = models.CharField(max_length=12, primary_key=True, editable=False)
     submitted_at = models.DateTimeField(auto_now_add=True)
 
     # Room details (copied, not related)

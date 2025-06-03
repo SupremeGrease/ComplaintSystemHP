@@ -4,13 +4,13 @@ from rest_framework import generics, status, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
-from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin
+from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin,DestroyModelMixin
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Room, Complaint
 from .serializers import RoomSerializer, ComplaintSerializer, ComplaintCreateSerializer
 
 # Create your views here.
-class RoomViewSet(GenericViewSet, ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin):
+class RoomViewSet(GenericViewSet, ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin,DestroyModelMixin):
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
@@ -42,8 +42,9 @@ class RoomViewSet(GenericViewSet, ListModelMixin, CreateModelMixin, RetrieveMode
             'qr_code_id': str(room.qr_code_id)
         })
 
-class ComplaintViewSet(GenericViewSet, ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin):
+class ComplaintViewSet(GenericViewSet, ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin):
     queryset = Complaint.objects.all().order_by('-submitted_at')
+    lookup_field = 'ticket_id'
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['status', 'priority', 'issue_type', 'ward', 'block']
     search_fields = ['ticket_id', 'room_number', 'bed_number', 'description']
@@ -59,7 +60,7 @@ class ComplaintViewSet(GenericViewSet, ListModelMixin, CreateModelMixin, Retriev
         serializer.save(submitted_by=self.request.user.username if self.request.user.is_authenticated else "Anonymous")
 
     @action(detail=True, methods=['post'])
-    def update_status(self, request, pk=None):
+    def update_status(self, request, ticket_id=None):
         complaint = self.get_object()
         new_status = request.data.get('status')
         remarks = request.data.get('remarks', '')

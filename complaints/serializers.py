@@ -39,11 +39,7 @@ class ComplaintCreateSerializer(serializers.ModelSerializer):
 class ComplaintSerializer(serializers.ModelSerializer):
     class Meta:
         model = Complaint
-        fields = [
-            'ticket_id', 'bed_number', 'block', 'room_number', 'floor', 'ward', 'speciality', 'room_type', 'room_status',
-            'issue_type', 'description', 'priority', 'image', 'status', 'submitted_at', 'assigned_department',
-            'resolved_by', 'resolved_at', 'remarks', 'submitted_by'
-        ]
+        fields = '__all__'
         read_only_fields = ('ticket_id', 'submitted_at', 'resolved_at', 'resolved_by', 'submitted_by')
 
     def validate(self, data):
