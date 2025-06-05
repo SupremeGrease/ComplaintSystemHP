@@ -80,7 +80,7 @@ class Complaint(models.Model):
         ('other', 'Other'),
     ]
     PRIORITY_CHOICES = [('low', 'Low'), ('medium', 'Medium'), ('high', 'High')]
-    STATUS_CHOICES = [('open', 'Open'), ('in_progress', 'In Progress'), ('resolved', 'Resolved'),('closed','Closed'),('on hold','On Hold')]
+    STATUS_CHOICES = [('open', 'Open'), ('in_progress', 'In_Progress'), ('resolved', 'Resolved'),('closed','Closed'),('on_hold','On_Hold')]
 
     # Make ticket_id the primary key
     ticket_id = models.CharField(max_length=12, primary_key=True, editable=False)
