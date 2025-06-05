@@ -8,7 +8,6 @@ class ComplaintImageSerializer(serializers.ModelSerializer):
         fields = ['image']  # you can also include 'id' if needed
 
     def to_internal_value(self, data):
-        print("ComplaintImageSerializer to_internal_value called with data:", data)
         return super().to_internal_value(data)
 
 
@@ -38,6 +37,7 @@ class ComplaintCreateSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def validate(self, data):
+        # Removed debug print statements
         # Removed room validation for debugging image upload
         return data
 
