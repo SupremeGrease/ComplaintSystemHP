@@ -100,7 +100,6 @@ class Complaint(models.Model):
     issue_type = models.CharField(max_length=50, choices=ISSUE_CHOICES)
     description = models.TextField()
     priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES)
-    image = models.ImageField(upload_to='complaint_images/', null=True, blank=True)
     submitted_by = models.CharField(max_length=100, default="Patient")
 
     # Status tracking
@@ -118,3 +117,11 @@ class Complaint(models.Model):
 
     def __str__(self):
         return f"Ticket {self.ticket_id} - Room {self.room_number} ({self.ward})"
+    
+
+class ComplaintImage(models.Model):
+    complaint = models.ForeignKey('Complaint', related_name='images', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='complaint_images/')
+
+    def __str__(self):
+        return f"Image for Complaint {self.complaint.ticket_id}"

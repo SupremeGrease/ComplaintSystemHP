@@ -1,6 +1,16 @@
 from rest_framework import serializers
-from .models import Room, Complaint
+from .models import Room, Complaint, ComplaintImage
 from django.db import models
+
+class ComplaintImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ComplaintImage
+        fields = ['image']  # you can also include 'id' if needed
+
+    def to_internal_value(self, data):
+        print("ComplaintImageSerializer to_internal_value called with data:", data)
+        return super().to_internal_value(data)
+
 
 class RoomSerializer(serializers.ModelSerializer):
     class Meta:
@@ -9,9 +19,27 @@ class RoomSerializer(serializers.ModelSerializer):
         read_only_fields = ('qr_code', 'dataenc')
 
 class ComplaintCreateSerializer(serializers.ModelSerializer):
+    images = ComplaintImageSerializer(many=True,write_only=True,required=False)
+    def create(self, validated_data):
+        # Access images directly from request.FILES
+        images_data = self.context['request'].FILES.getlist('images')
+        # Remove 'images' from validated_data as it's not processed by the serializer field
+        validated_data.pop('images', None) # Use .pop with a default to avoid KeyError if 'images' is somehow still there but None
+
+        complaint = Complaint.objects.create(**validated_data)
+
+        for image_file in images_data:
+            ComplaintImage.objects.create(complaint=complaint, image=image_file)
+
+        return complaint
+
     class Meta:
         model = Complaint
-        fields = ['issue_type', 'description', 'priority', 'image']
+        fields = '__all__'
+
+    def validate(self, data):
+        # Removed room validation for debugging image upload
+        return data
 
 class ComplaintSerializer(serializers.ModelSerializer):
     class Meta:
@@ -40,4 +68,7 @@ class ComplaintSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError("Room not found with the provided details")
         return data
 
-# Removing the duplicate Room model class that was here 
+class ComplaintImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ComplaintImage
+        fields = ['image']

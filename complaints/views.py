@@ -47,6 +47,7 @@ class ComplaintViewSet(GenericViewSet, ListModelMixin, CreateModelMixin, Retriev
         return ComplaintSerializer
 
     def perform_create(self, serializer):
+        print("Request data before validation:", self.request.data)
         serializer.save(submitted_by=self.request.user.username if self.request.user.is_authenticated else "Anonymous")
 
     @action(detail=True, methods=['post'])
