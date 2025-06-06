@@ -36,12 +36,10 @@ class ComplaintCreateSerializer(serializers.ModelSerializer):
         model = Complaint
         fields = '__all__'
 
-    def validate(self, data):
-        # Removed debug print statements
-        # Removed room validation for debugging image upload
-        return data
+   
 
 class ComplaintSerializer(serializers.ModelSerializer):
+    images = ComplaintImageSerializer(many=True, read_only=True)
     class Meta:
         model = Complaint
         fields = '__all__'
