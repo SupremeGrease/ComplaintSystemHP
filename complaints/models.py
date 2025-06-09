@@ -6,6 +6,9 @@ from PIL import Image
 import uuid
 import base64
 import json
+import hmac
+import hashlib
+from django.conf import settings
 
 # Create your models here.
 class Room(models.Model):
@@ -48,6 +51,13 @@ class Room(models.Model):
             # Generate base64 encoded data
             self.dataenc = self.get_room_data()
             
+            # Generate HMAC signature
+            signature = hmac.new(
+                settings.QR_CODE_SECRET_KEY.encode('utf-8'),
+                self.dataenc.encode('utf-8'),
+                hashlib.sha256
+            ).hexdigest()
+
             # Generate QR code
             qr = qrcode.QRCode(
                 version=1,
@@ -55,8 +65,8 @@ class Room(models.Model):
                 box_size=10,
                 border=4,
             )
-            # Add the URL with encoded data
-            qr_data = f"http://localhost:5173/ComplaintForm?data={self.dataenc}"
+            # Add the URL with encoded data and signature
+            qr_data = f"http://localhost:5173/ComplaintForm?data={self.dataenc}&signature={signature}"
             qr.add_data(qr_data)
             qr.make(fit=True)
             

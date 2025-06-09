@@ -23,6 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-_8&9w)pek%vf&9%w+)t9_@g$)s12m8&9n^330uda-lgg0*i+ir'
 
+# Secret key for QR code HMAC
+QR_CODE_SECRET_KEY = 'YOUR_VERY_STRONG_RANDOM_QR_SECRET_KEY_HERE' # CHANGE THIS IN PRODUCTION
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
