@@ -38,7 +38,6 @@ if missing_fields:
 else:
     print("\nAll fields present!")
 
-# Verify data matches
 print("\nVerifying data:")
 for field in expected_fields:
     print(f"{field}: Original={getattr(test_room, field)}, Decoded={decoded_data[field]}") 
