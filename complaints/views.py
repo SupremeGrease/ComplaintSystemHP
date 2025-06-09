@@ -7,7 +7,7 @@ from rest_framework.viewsets import GenericViewSet
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin,DestroyModelMixin
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Room, Complaint
-from .serializers import RoomSerializer, ComplaintSerializer, ComplaintCreateSerializer
+from .serializers import RoomSerializer, ComplaintSerializer, ComplaintCreateSerializer, ComplaintUpdateSerializer
 from .pagination import CustomLimitOffsetPagination
 
 # Create your views here.
@@ -46,6 +46,8 @@ class ComplaintViewSet(GenericViewSet, ListModelMixin, CreateModelMixin, Retriev
     def get_serializer_class(self):
         if self.action == 'create':
             return ComplaintCreateSerializer
+        elif self.action == 'update' or self.action == 'partial_update':
+            return ComplaintUpdateSerializer
         return ComplaintSerializer
 
     def perform_create(self, serializer):

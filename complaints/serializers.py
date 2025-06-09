@@ -66,6 +66,37 @@ class ComplaintSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError("Room not found with the provided details")
         return data
 
+
+class ComplaintUpdateSerializer(serializers.ModelSerializer):
+    images = ComplaintImageSerializer(many=True, read_only=True)
+    new_images = serializers.ListField(
+        child=serializers.ImageField(), write_only=True, required=False
+    )
+    existing_images = serializers.ListField(
+        child=serializers.CharField(), write_only=True, required=False
+    )
+
+    class Meta:
+        model = Complaint
+        fields = '_all_'
+        read_only_fields = ('ticket_id',)
+
+    def update(self, instance, validated_data):
+        new_images = validated_data.pop('new_images', [])
+        existing_images = validated_data.pop('existing_images', [])
+
+        # Delete only the images not in the existing_images list
+        if existing_images:
+            instance.images.exclude(image__in=existing_images).delete()
+        else:
+            instance.images.all().delete()
+
+        # Add new images
+        for image_file in new_images:
+            ComplaintImage.objects.create(complaint=instance, image=image_file)
+
+        return super().update(instance,validated_data)
+
 class ComplaintImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ComplaintImage
