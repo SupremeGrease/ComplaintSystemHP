@@ -78,7 +78,7 @@ class ComplaintUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Complaint
-        fields = '_all_'
+        fields = '__all__'
         read_only_fields = ('ticket_id',)
 
     def update(self, instance, validated_data):
