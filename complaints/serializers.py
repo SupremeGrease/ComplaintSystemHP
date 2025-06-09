@@ -68,13 +68,7 @@ class ComplaintSerializer(serializers.ModelSerializer):
 
 
 class ComplaintUpdateSerializer(serializers.ModelSerializer):
-    images = ComplaintImageSerializer(many=True, read_only=True)
-    new_images = serializers.ListField(
-        child=serializers.ImageField(), write_only=True, required=False
-    )
-    existing_images = serializers.ListField(
-        child=serializers.CharField(), write_only=True, required=False
-    )
+    images = ComplaintImageSerializer(many=True, required=False)
 
     class Meta:
         model = Complaint
@@ -82,20 +76,20 @@ class ComplaintUpdateSerializer(serializers.ModelSerializer):
         read_only_fields = ('ticket_id',)
 
     def update(self, instance, validated_data):
-        new_images = validated_data.pop('new_images', [])
-        existing_images = validated_data.pop('existing_images', [])
+        images_data = self.context['request'].FILES.getlist('images')
+        validated_data.pop('images', None)
 
-        # Delete only the images not in the existing_images list
-        if existing_images:
-            instance.images.exclude(image__in=existing_images).delete()
-        else:
-            instance.images.all().delete()
+        # Delete existing images
+        instance.images.all().delete()
 
-        # Add new images
-        for image_file in new_images:
-            ComplaintImage.objects.create(complaint=instance, image=image_file)
+        # Update complaint fields
+        complaint = super().update(instance, validated_data)
 
-        return super().update(instance,validated_data)
+        # Create new images
+        for image_file in images_data:
+            ComplaintImage.objects.create(complaint=complaint, image=image_file)
+
+        return complaint
 
 class ComplaintImageSerializer(serializers.ModelSerializer):
     class Meta:
