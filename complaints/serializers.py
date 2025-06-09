@@ -123,7 +123,7 @@ class ComplaintSerializer(serializers.ModelSerializer):
 
 
 class ComplaintUpdateSerializer(serializers.ModelSerializer):
-    images = ComplaintImageSerializer(many=True, required=False)
+    images = ComplaintImageSerializer(many=True, write_only=True, required=False)
 
     class Meta:
         model = Complaint
@@ -133,9 +133,6 @@ class ComplaintUpdateSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         images_data = self.context['request'].FILES.getlist('images')
         validated_data.pop('images', None)
-
-        # Delete existing images
-        instance.images.all().delete()
 
         # Update complaint fields
         complaint = super().update(instance, validated_data)
