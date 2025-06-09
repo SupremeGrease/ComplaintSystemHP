@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Room, Complaint
+from .models import Room, Complaint, ComplaintImage
 
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
@@ -9,8 +9,13 @@ class RoomAdmin(admin.ModelAdmin):
     ordering = ('Block', 'Floor_no', 'room_no')
     readonly_fields = ('qr_code',)
 
+class ComplaintImageInline(admin.TabularInline):
+    model = ComplaintImage
+    extra = 1
+
 @admin.register(Complaint)
 class ComplaintAdmin(admin.ModelAdmin):
+    inlines = [ComplaintImageInline]
     list_display = (
         'ticket_id', 'room_number', 'bed_number', 'block',
         'issue_type', 'priority', 'status', 'submitted_at'
