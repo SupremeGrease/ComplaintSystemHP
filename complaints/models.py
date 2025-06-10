@@ -47,37 +47,36 @@ class Room(models.Model):
         return base64.b64encode(json_data.encode()).decode()
     
     def save(self, *args, **kwargs):
-        if not self.qr_code:
-            # Generate base64 encoded data
-            self.dataenc = self.get_room_data()
-            
-            # Generate HMAC signature
-            signature = hmac.new(
-                settings.QR_CODE_SECRET_KEY.encode('utf-8'),
-                self.dataenc.encode('utf-8'),
-                hashlib.sha256
-            ).hexdigest()
+        # Generate base64 encoded data
+        self.dataenc = self.get_room_data()
+        
+        # Generate HMAC signature
+        signature = hmac.new(
+            settings.QR_CODE_SECRET_KEY.encode('utf-8'),
+            self.dataenc.encode('utf-8'),
+            hashlib.sha256
+        ).hexdigest()
 
-            # Generate QR code
-            qr = qrcode.QRCode(
-                version=1,
-                error_correction=qrcode.constants.ERROR_CORRECT_L,
-                box_size=10,
-                border=4,
-            )
-            # Add the URL with encoded data and signature
-            qr_data = f"http://localhost:5173/ComplaintForm?data={self.dataenc}&signature={signature}"
-            qr.add_data(qr_data)
-            qr.make(fit=True)
-            
-            # Create QR code image
-            qr_image = qr.make_image(fill_color="black", back_color="white")
-            
-            # Save QR code to model
-            buffer = BytesIO()
-            qr_image.save(buffer, format='PNG')
-            filename = f'qr_code_{self.room_no}_{self.bed_no}.png'
-            self.qr_code.save(filename, File(buffer), save=False)
+        # Generate QR code
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=10,
+            border=4,
+        )
+        # Add the URL with encoded data and signature
+        qr_data = f"http://localhost:5173/ComplaintForm?data={self.dataenc}&signature={signature}"
+        qr.add_data(qr_data)
+        qr.make(fit=True)
+        
+        # Create QR code image
+        qr_image = qr.make_image(fill_color="black", back_color="white")
+        
+        # Save QR code to model
+        buffer = BytesIO()
+        qr_image.save(buffer, format='PNG')
+        filename = f'qr_code_{self.room_no}_{self.bed_no}.png'
+        self.qr_code.save(filename, File(buffer), save=False)
         
         super().save(*args, **kwargs)
 
