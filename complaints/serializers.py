@@ -2,7 +2,7 @@ import hmac
 import hashlib
 from django.conf import settings
 from rest_framework import serializers
-from .models import Room, Complaint, ComplaintImage
+from .models import Room, Complaint, ComplaintImage, Department,Issue_Category
 from django.db import models
 
 class ComplaintImageSerializer(serializers.ModelSerializer):
@@ -20,6 +20,18 @@ class RoomSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ('qr_code', 'dataenc')
 
+
+class DepartmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Department
+        fields = '__all__'
+
+
+class IssueCatSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Issue_Category
+        fields = '__all__'
+        
 class ComplaintCreateSerializer(serializers.ModelSerializer):
     images = ComplaintImageSerializer(many=True,write_only=True,required=False)
     

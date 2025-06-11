@@ -46,7 +46,47 @@ Manage room details and QR codes.
     *   `POST /api/rooms/{id}/update_status/`
     *   **Body:** JSON object `{ "status": "<new_status>" }` (e.g., `"active"`, `"inactive"`).
 
-### 2. Complaints
+### 2. Departments
+
+Manage department details.
+
+*   **List all departments:**
+    *   `GET /api/departments/`
+*   **Create a new department:**
+    *   `POST /api/departments/`
+    *   **Body:** JSON object with department details (e.g., `dept_code`, `department_name`).
+*   **Retrieve a single department:**
+    *   `GET /api/departments/{dept_code}/`
+*   **Update a department (full update):**
+    *   `PUT /api/departments/{dept_code}/`
+    *   **Body:** Full JSON object with all department details.
+*   **Partially update a department:**
+    *   `PATCH /api/departments/{dept_code}/`
+    *   **Body:** JSON object with fields to update.
+*   **Delete a department:**
+    *   `DELETE /api/departments/{dept_code}/`
+
+### 3. Issue Categories
+
+Manage issue categories, linked to departments.
+
+*   **List all issue categories:**
+    *   `GET /api/issue-category/`
+*   **Create a new issue category:**
+    *   `POST /api/issue-category/`
+    *   **Body:** JSON object with category details (e.g., `issueCategoryCode`, `department` (dept_code), `issueCategoryname`).
+*   **Retrieve a single issue category:**
+    *   `GET /api/issue-category/{issueCategoryCode}/`
+*   **Update an issue category (full update):**
+    *   `PUT /api/issue-category/{issueCategoryCode}/`
+    *   **Body:** Full JSON object with all category details.
+*   **Partially update an issue category:**
+    *   `PATCH /api/issue-category/{issueCategoryCode}/`
+    *   **Body:** JSON object with fields to update.
+*   **Delete an issue category:**
+    *   `DELETE /api/issue-category/{issueCategoryCode}/`
+
+### 4. Complaints
 
 Manage complaint submissions, including image uploads and QR code data validation.
 

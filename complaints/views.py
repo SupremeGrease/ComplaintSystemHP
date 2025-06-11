@@ -6,8 +6,8 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin,DestroyModelMixin
 from django_filters.rest_framework import DjangoFilterBackend
-from .models import Room, Complaint
-from .serializers import RoomSerializer, ComplaintSerializer, ComplaintCreateSerializer, ComplaintUpdateSerializer
+from .models import Room, Complaint, Department, Issue_Category
+from .serializers import RoomSerializer, ComplaintSerializer, ComplaintCreateSerializer, ComplaintUpdateSerializer, DepartmentSerializer,IssueCatSerializer
 from .pagination import CustomLimitOffsetPagination
 
 # Create your views here.
@@ -32,6 +32,23 @@ class RoomViewSet(GenericViewSet, ListModelMixin, CreateModelMixin, RetrieveMode
         room.status = new_status
         room.save()
         return Response(RoomSerializer(room).data)
+
+
+class DepartmentViewSet(GenericViewSet, ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin):
+    queryset = Department.objects.all()
+    serializer_class = DepartmentSerializer
+    lookup_field = 'dept_code'
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ['department_name']
+    search_fields = ['dept_code', 'department_name']
+
+class IssueCatViewset(GenericViewSet, ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin):
+    queryset =Issue_Category.objects.all()
+    serializer_class = IssueCatSerializer
+    lookup_field = 'issueCategoryCode'
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ['issueCategoryCode','department','issueCategoryname']
+    search_fields = ['issueCategoryCode','department__department_name','issueCategoryname']
 
 class ComplaintViewSet(GenericViewSet, ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin):
     queryset = Complaint.objects.all().order_by('-submitted_at')

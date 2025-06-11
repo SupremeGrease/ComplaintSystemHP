@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Room, Complaint, ComplaintImage
+from .models import Room, Complaint, ComplaintImage, Department, Issue_Category
 
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
@@ -25,3 +25,13 @@ class ComplaintAdmin(admin.ModelAdmin):
     readonly_fields = ('ticket_id', 'submitted_at', 'resolved_at')
     ordering = ('-submitted_at',)
     date_hierarchy = 'submitted_at'
+
+@admin.register(Department)
+class DepartmentAdmin(admin.ModelAdmin):
+    list_display = ('dept_code', 'department_name')
+    search_fields = ('dept_code', 'department_name')
+
+@admin.register(Issue_Category)
+class IssuescatAdmin(admin.ModelAdmin):
+    list_display = ('issueCategoryCode','department','issueCategoryname')
+    search_fields =('issueCategoryCode','department__department_name','issueCategoryname')
