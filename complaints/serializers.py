@@ -25,13 +25,58 @@ class DepartmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Department
         fields = '__all__'
+        read_only_fields = ('department_code',)  # Make department_code read-only after creation
+
+    def validate_department_name(self, value):
+        # Ensure department name is unique (case-insensitive)
+        if self.instance:  # If updating
+            if Department.objects.exclude(pk=self.instance.pk).filter(department_name__iexact=value).exists():
+                raise serializers.ValidationError("A department with this name already exists.")
+        else:  # If creating
+            if Department.objects.filter(department_name__iexact=value).exists():
+                raise serializers.ValidationError("A department with this name already exists.")
+        return value
+
+    def validate_status(self, value):
+        if value not in dict(Department.STATUS_CHOICES):
+            raise serializers.ValidationError("Invalid status value")
+        return value
 
 
 class IssueCatSerializer(serializers.ModelSerializer):
+    department_name = serializers.CharField(source='department.department_name', read_only=True)  # Add this for convenience
+
     class Meta:
         model = Issue_Category
         fields = '__all__'
-        
+        read_only_fields = ('issueCategoryCode',)  # Make issueCategoryCode read-only after creation
+
+    def validate_issueCategoryname(self, value):
+        # Ensure category name is unique within the same department (case-insensitive)
+        if self.instance:  # If updating
+            if Issue_Category.objects.exclude(pk=self.instance.pk).filter(
+                department=self.initial_data.get('department', self.instance.department),
+                issueCategoryname__iexact=value
+            ).exists():
+                raise serializers.ValidationError("An issue category with this name already exists in this department.")
+        else:  # If creating
+            if Issue_Category.objects.filter(
+                department=self.initial_data.get('department'),
+                issueCategoryname__iexact=value
+            ).exists():
+                raise serializers.ValidationError("An issue category with this name already exists in this department.")
+        return value
+
+    def validate_status(self, value):
+        if value not in dict(Issue_Category.STATUS_CHOICES):
+            raise serializers.ValidationError("Invalid status value")
+        return value
+
+    def validate_department(self, value):
+        if value.status != 'active':
+            raise serializers.ValidationError("Cannot assign issue category to an inactive department")
+        return value
+
 class ComplaintCreateSerializer(serializers.ModelSerializer):
     images = ComplaintImageSerializer(many=True,write_only=True,required=False)
     
