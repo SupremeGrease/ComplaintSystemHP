@@ -28,10 +28,10 @@ class ComplaintAdmin(admin.ModelAdmin):
 
 @admin.register(Department)
 class DepartmentAdmin(admin.ModelAdmin):
-    list_display = ('dept_code', 'department_name')
-    search_fields = ('dept_code', 'department_name')
+    list_display = ('department_code', 'department_name','status')
+    search_fields = ('department_code', 'department_name','status')
 
 @admin.register(Issue_Category)
 class IssuescatAdmin(admin.ModelAdmin):
-    list_display = ('issueCategoryCode','department','issueCategoryname')
-    search_fields =('issueCategoryCode','department__department_name','issueCategoryname')
+    list_display = ('issueCategoryCode','department','issueCategoryname','status')
+    search_fields =('issueCategoryCode','department__department_name','issueCategoryname','status')

@@ -136,8 +136,10 @@ class ComplaintImage(models.Model):
         return f"Image for Complaint {self.complaint.ticket_id}"
 
 class Department(models.Model):
-    dept_code = models.CharField(max_length=6, primary_key=True)
+    department_code = models.CharField(max_length=6, primary_key=True)
     department_name = models.CharField(max_length=20)
+    STATUS_CHOICES = [('active', 'Active'), ('inactive', 'Inactive')]
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='inactive')
 
     def __str__(self):
         return self.department_name
@@ -146,6 +148,8 @@ class Issue_Category(models.Model):
     issueCategoryCode = models.CharField(max_length=6,primary_key=True)
     department = models.ForeignKey('Department', related_name='issue_categories', on_delete=models.CASCADE)
     issueCategoryname = models.CharField(max_length=20)
+    STATUS_CHOICES = [('active', 'Active'), ('inactive', 'Inactive')]
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='inactive')
 
     def __str__(self):
         return f"{self.issueCategoryname} ({self.department.department_name})"

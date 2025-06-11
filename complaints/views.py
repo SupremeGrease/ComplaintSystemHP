@@ -37,17 +37,17 @@ class RoomViewSet(GenericViewSet, ListModelMixin, CreateModelMixin, RetrieveMode
 class DepartmentViewSet(GenericViewSet, ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin):
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
-    lookup_field = 'dept_code'
+    lookup_field = 'department_code'
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    filterset_fields = ['department_name']
-    search_fields = ['dept_code', 'department_name']
+    filterset_fields = ['department_name','status']
+    search_fields = ['department_code', 'department_name']
 
 class IssueCatViewset(GenericViewSet, ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin):
     queryset =Issue_Category.objects.all()
     serializer_class = IssueCatSerializer
     lookup_field = 'issueCategoryCode'
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    filterset_fields = ['issueCategoryCode','department','issueCategoryname']
+    filterset_fields = ['issueCategoryCode','department','issueCategoryname','status']
     search_fields = ['issueCategoryCode','department__department_name','issueCategoryname']
 
 class ComplaintViewSet(GenericViewSet, ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin):

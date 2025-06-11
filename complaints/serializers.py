@@ -97,6 +97,34 @@ class ComplaintCreateSerializer(serializers.ModelSerializer):
         else:
              raise serializers.ValidationError({'qr_code': 'QR data or signature missing for QR-based complaint submission.'})
 
+        # New validation: Prevent duplicate open/in-progress complaints for the same issue in the same room
+        issue_type = data.get('issue_type')
+        bed_number = data.get('bed_number')
+        room_number = data.get('room_number')
+        block = data.get('block')
+        floor = data.get('floor')
+        ward = data.get('ward')
+        speciality = data.get('speciality')
+        room_type = data.get('room_type')
+
+        if issue_type and bed_number and room_number and block and floor and ward and speciality and room_type:
+            existing_complaint = Complaint.objects.filter(
+                issue_type=issue_type,
+                bed_number=bed_number,
+                room_number=room_number,
+                block=block,
+                floor=floor,
+                ward=ward,
+                speciality=speciality,
+                room_type=room_type,
+                status__in=['open', 'in_progress'] # Check for open or in-progress status
+            ).exists()
+
+            if existing_complaint:
+                raise serializers.ValidationError(
+                    'A complaint with the same issue type is already open or in progress for this room.'
+                )
+
         return data
 
     class Meta:
