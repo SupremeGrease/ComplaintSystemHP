@@ -137,7 +137,7 @@ class ComplaintImage(models.Model):
 
 class Department(models.Model):
     department_code = models.CharField(max_length=6, primary_key=True)
-    department_name = models.CharField(max_length=20)
+    department_name = models.CharField(max_length=20, unique=True)
     STATUS_CHOICES = [('active', 'Active'), ('inactive', 'Inactive')]
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='inactive')
 
@@ -147,7 +147,7 @@ class Department(models.Model):
 class Issue_Category(models.Model):
     issueCategoryCode = models.CharField(max_length=6,primary_key=True)
     department = models.ForeignKey('Department', related_name='issue_categories', on_delete=models.CASCADE)
-    issueCategoryname = models.CharField(max_length=20)
+    issueCategoryname = models.CharField(max_length=20,unique=True)
     STATUS_CHOICES = [('active', 'Active'), ('inactive', 'Inactive')]
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='inactive')
 

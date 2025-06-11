@@ -22,10 +22,18 @@ class RoomSerializer(serializers.ModelSerializer):
 
 
 class DepartmentSerializer(serializers.ModelSerializer):
+    department_code = serializers.CharField(required=False)  # Make it optional for updates
+
     class Meta:
         model = Department
         fields = '__all__'
-        read_only_fields = ('department_code',)  # Make department_code read-only after creation
+
+    def get_fields(self):
+        fields = super().get_fields()
+        # Make department_code read-only if we're updating an existing instance
+        if self.instance is not None:
+            fields['department_code'].read_only = True
+        return fields
 
     def validate_department_name(self, value):
         # Ensure department name is unique (case-insensitive)
@@ -45,11 +53,18 @@ class DepartmentSerializer(serializers.ModelSerializer):
 
 class IssueCatSerializer(serializers.ModelSerializer):
     department_name = serializers.CharField(source='department.department_name', read_only=True)  # Add this for convenience
+    issueCategoryCode = serializers.CharField(required=False)  # Make it optional for updates
 
     class Meta:
         model = Issue_Category
         fields = '__all__'
-        read_only_fields = ('issueCategoryCode',)  # Make issueCategoryCode read-only after creation
+
+    def get_fields(self):
+        fields = super().get_fields()
+        # Make issueCategoryCode read-only if we're updating an existing instance
+        if self.instance is not None:
+            fields['issueCategoryCode'].read_only = True
+        return fields
 
     def validate_issueCategoryname(self, value):
         # Ensure category name is unique within the same department (case-insensitive)
