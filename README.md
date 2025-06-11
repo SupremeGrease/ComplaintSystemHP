@@ -74,17 +74,17 @@ Manage issue categories, linked to departments.
     *   `GET /api/issue-category/`
 *   **Create a new issue category:**
     *   `POST /api/issue-category/`
-    *   **Body:** JSON object with category details (e.g., `issueCategoryCode`, `department` (dept_code), `issueCategoryname`).
+    *   **Body:** JSON object with category details (e.g., `issue_category_code`, `department` (dept_code), `issue_category_name`).
 *   **Retrieve a single issue category:**
-    *   `GET /api/issue-category/{issueCategoryCode}/`
+    *   `GET /api/issue-category/{issue_category_code}/`
 *   **Update an issue category (full update):**
-    *   `PUT /api/issue-category/{issueCategoryCode}/`
+    *   `PUT /api/issue-category/{issue_category_code}/`
     *   **Body:** Full JSON object with all category details.
 *   **Partially update an issue category:**
-    *   `PATCH /api/issue-category/{issueCategoryCode}/`
+    *   `PATCH /api/issue-category/{issue_category_code}/`
     *   **Body:** JSON object with fields to update.
 *   **Delete an issue category:**
-    *   `DELETE /api/issue-category/{issueCategoryCode}/`
+    *   `DELETE /api/issue-category/{issue_category_code}/`
 
 ### 4. Complaints
 

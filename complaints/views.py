@@ -43,12 +43,12 @@ class DepartmentViewSet(GenericViewSet, ListModelMixin, CreateModelMixin, Retrie
     search_fields = ['department_code', 'department_name']
 
 class IssueCatViewset(GenericViewSet, ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin):
-    queryset =Issue_Category.objects.all()
+    queryset = Issue_Category.objects.all()
     serializer_class = IssueCatSerializer
-    lookup_field = 'issueCategoryCode'
+    lookup_field = 'issue_category_code'
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    filterset_fields = ['issueCategoryCode','department','issueCategoryname','status']
-    search_fields = ['issueCategoryCode','department__department_name','issueCategoryname']
+    filterset_fields = ['issue_category_code', 'department', 'issue_category_name', 'status']
+    search_fields = ['issue_category_code', 'department__department_name', 'issue_category_name']
 
 class ComplaintViewSet(GenericViewSet, ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin):
     queryset = Complaint.objects.all().order_by('-submitted_at')

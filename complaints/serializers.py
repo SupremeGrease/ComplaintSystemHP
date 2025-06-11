@@ -52,8 +52,8 @@ class DepartmentSerializer(serializers.ModelSerializer):
 
 
 class IssueCatSerializer(serializers.ModelSerializer):
-    department_name = serializers.CharField(source='department.department_name', read_only=True)  # Add this for convenience
-    issueCategoryCode = serializers.CharField(required=False)  # Make it optional for updates
+    department_name = serializers.CharField(source='department.department_name', read_only=True)
+    issue_category_code = serializers.CharField(required=False)  # Updated field name
 
     class Meta:
         model = Issue_Category
@@ -61,23 +61,23 @@ class IssueCatSerializer(serializers.ModelSerializer):
 
     def get_fields(self):
         fields = super().get_fields()
-        # Make issueCategoryCode read-only if we're updating an existing instance
+        # Make issue_category_code read-only if we're updating an existing instance
         if self.instance is not None:
-            fields['issueCategoryCode'].read_only = True
+            fields['issue_category_code'].read_only = True
         return fields
 
-    def validate_issueCategoryname(self, value):
-        # Ensure category name is unique within the same department (case-insensitive)
+    def validate_issue_category_name(self, value):  # Updated field name
+        # Ensure category name is unique (case-insensitive)
         if self.instance:  # If updating
             if Issue_Category.objects.exclude(pk=self.instance.pk).filter(
                 department=self.initial_data.get('department', self.instance.department),
-                issueCategoryname__iexact=value
+                issue_category_name__iexact=value  # Updated field name
             ).exists():
                 raise serializers.ValidationError("An issue category with this name already exists in this department.")
         else:  # If creating
             if Issue_Category.objects.filter(
                 department=self.initial_data.get('department'),
-                issueCategoryname__iexact=value
+                issue_category_name__iexact=value  # Updated field name
             ).exists():
                 raise serializers.ValidationError("An issue category with this name already exists in this department.")
         return value

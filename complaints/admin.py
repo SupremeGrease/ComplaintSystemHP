@@ -33,5 +33,5 @@ class DepartmentAdmin(admin.ModelAdmin):
 
 @admin.register(Issue_Category)
 class IssuescatAdmin(admin.ModelAdmin):
-    list_display = ('issueCategoryCode','department','issueCategoryname','status')
-    search_fields =('issueCategoryCode','department__department_name','issueCategoryname','status')
+    list_display = ('issue_category_code', 'department', 'issue_category_name', 'status')
+    search_fields = ('issue_category_code', 'department__department_name', 'issue_category_name', 'status')

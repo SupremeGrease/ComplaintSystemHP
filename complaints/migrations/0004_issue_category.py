@@ -14,8 +14,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Issue_Category',
             fields=[
-                ('issueCategoryCode', models.CharField(max_length=6, primary_key=True, serialize=False)),
-                ('issueCategoryname', models.CharField(max_length=20)),
+                ('issue_category_code', models.CharField(max_length=6, primary_key=True, serialize=False)),
+                ('issue_category_name', models.CharField(max_length=20)),
                 ('department', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='issue_categories', to='complaints.department')),
             ],
         ),
