@@ -82,12 +82,7 @@ class Room(models.Model):
 
 
 class Complaint(models.Model):
-    ISSUE_CHOICES = [
-        ('cleanliness', 'Cleanliness'),
-        ('electrical', 'Electrical'),
-        ('plumbing', 'Plumbing'),
-        ('other', 'Other'),
-    ]
+    
     PRIORITY_CHOICES = [('low', 'Low'), ('medium', 'Medium'), ('high', 'High')]
     STATUS_CHOICES = [('open', 'Open'), ('in_progress', 'In_Progress'), ('resolved', 'Resolved'),('closed','Closed'),('on_hold','On_Hold')]
 
@@ -106,7 +101,7 @@ class Complaint(models.Model):
     room_status = models.CharField(max_length=10)
 
     # Patient input fields
-    issue_type = models.CharField(max_length=50, choices=ISSUE_CHOICES)
+    issue_type = models.CharField(max_length=50)
     description = models.TextField()
     priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES)
     submitted_by = models.CharField(max_length=100, default="Patient")

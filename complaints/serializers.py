@@ -20,6 +20,40 @@ class RoomSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ('qr_code', 'dataenc')
 
+    def validate(self, data):
+        # Get all fields except status
+        bed_no = data.get('bed_no')
+        room_no = data.get('room_no')
+        Block = data.get('Block')
+        Floor_no = data.get('Floor_no')
+        ward = data.get('ward')
+        speciality = data.get('speciality')
+        room_type = data.get('room_type')
+
+        # Check if all required fields are present
+        if all([bed_no, room_no, Block, Floor_no, ward, speciality, room_type]):
+            # Check if a room with these exact fields already exists
+            existing_room = Room.objects.filter(
+                bed_no=bed_no,
+                room_no=room_no,
+                Block=Block,
+                Floor_no=Floor_no,
+                ward=ward,
+                speciality=speciality,
+                room_type=room_type
+            )
+
+            # If updating, exclude the current instance from the check
+            if self.instance:
+                existing_room = existing_room.exclude(pk=self.instance.pk)
+
+            if existing_room.exists():
+                raise serializers.ValidationError(
+                    "A room with these exact details already exists. All fields (except status) must be unique together."
+                )
+
+        return data
+
 
 class DepartmentSerializer(serializers.ModelSerializer):
     department_code = serializers.CharField(required=False)  # Make it optional for updates
